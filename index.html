@@ -42,7 +42,7 @@ td:last-child{text-align:right;font-weight:700}
 <body>
 <main>
 <h1>Diagnóstico de madurez digital</h1>
-<p class="sub">Captura de la aplicación en la microempresa. No anotes contraseñas ni datos personales de clientes.</p>
+<p class="sub">Captura de la aplicación en la microempresa.</p>
 
 <form id="f" novalidate>
 <section>
@@ -87,7 +87,7 @@ td:last-child{text-align:right;font-weight:700}
 </main>
 
 <script>
-// Pega aquí la URL de tu aplicación web de Apps Script (termina en /exec)
+
 const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyX1n_hN2F_H0y8tCZ8lCEk8wGIdWgGsLHrMixlceUP0JDRVgUIyHpeQRstth4txhJN/exec';
 
 const NIVELES = ['Inexistente','Inicial','Básico','Gestionado','Optimizado'];
@@ -112,7 +112,7 @@ const DIMS = [
 const SIN_REDES = ['1.1','2.1','2.2','2.3'];
 const $ = id => document.getElementById(id);
 
-// ----- construir los indicadores -----
+// Indicadores
 let html = '';
 DIMS.forEach((d, i) => {
   html += `<section><h2>Dimensión ${i+1}. ${d[0]}</h2>`;
@@ -131,7 +131,7 @@ DIMS.forEach((d, i) => {
 });
 $('dims').innerHTML = html;
 
-// Casilla "sin redes sociales" al inicio de la dimensión 1
+
 $('dims').querySelector('section').insertAdjacentHTML('afterbegin',
   '<label class="sin"><input type="checkbox" id="sinredes" style="width:20px;height:20px;accent-color:#0b6e6e"> El negocio no tiene redes sociales (1.1, 2.1, 2.2 y 2.3 = 0)</label>');
 
@@ -148,7 +148,7 @@ $('sinredes').addEventListener('change', e => {
 
 $('fecha').value = new Date().toISOString().slice(0, 10);
 
-// ----- enviar -----
+// BOTÓN AQUÍ
 function mostrar(texto, error) { const m = $('msg'); m.textContent = texto; m.className = error ? 'err' : ''; }
 
 $('f').addEventListener('submit', async ev => {
