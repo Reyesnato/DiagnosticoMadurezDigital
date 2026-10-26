@@ -26,6 +26,7 @@ legend{font-weight:700;padding:0 6px}
 .ev{display:flex;gap:18px;margin-top:6px;padding-top:8px;border-top:1px dashed var(--line);font-size:.92rem}
 .ev label{display:flex;gap:6px;align-items:center;cursor:pointer}
 .sin{display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:12px}
+.q{margin:2px 0 8px;font-style:italic}
 .hint{color:var(--mut);font-size:.88rem;margin:0 0 10px}
 button{font:inherit;font-weight:700;border:0;border-radius:6px;padding:13px 18px;background:var(--acc);color:#fff;width:100%;cursor:pointer}
 button:disabled{opacity:.6;cursor:wait}
@@ -42,7 +43,7 @@ td:last-child{text-align:right;font-weight:700}
 <body>
 <main>
 <h1>Diagnóstico de madurez digital</h1>
-<p class="sub">Captura de la aplicación en la microempresa.</p>
+<section id="aviso"><h2>Aviso de privacidad</h2><p style="margin:0 0 10px">Derek Renato Reyes Herrera, practicante del Tecnológico de El Dorado, en colaboración con MiCM.mx, recaba los datos de esta encuesta (nombre, giro, número de empleados y redes sociales del negocio, tus respuestas sobre el uso de herramientas digitales y métricas de actividad de sus cuentas) únicamente para realizar un diagnóstico de madurez digital como parte de un proyecto de prácticas profesionales y comparar el resultado al inicio y al final del proyecto. No se piden contraseñas, datos sensibles ni datos personales de tus clientes, y los datos no se venden ni se comparten con terceros.</p><label class="sin" style="margin:0"><input type="checkbox" id="acepto" style="width:20px;height:20px;accent-color:#0b6e6e"><span>He leído el aviso de privacidad y acepto participar en el diagnóstico y el tratamiento de mis datos para esa finalidad.</span></label></section>
 
 <form id="f" novalidate>
 <section>
@@ -81,56 +82,37 @@ td:last-child{text-align:right;font-weight:700}
 
 <section id="res" hidden>
 <h2>Resultado guardado</h2>
+<p class="hint">En los reportes identifica al negocio solo con este ID, sin nombre del dueño ni teléfono.</p>
 <table id="tabla"></table>
 <button type="button" class="sec" id="nuevo">Nueva aplicación</button>
 </section>
 </main>
 
 <script>
-
 const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyX1n_hN2F_H0y8tCZ8lCEk8wGIdWgGsLHrMixlceUP0JDRVgUIyHpeQRstth4txhJN/exec';
 
+
 const NIVELES = ['Inexistente','Inicial','Básico','Gestionado','Optimizado'];
-const DIMS = [
- ['Presencia en línea',[
-  ['Perfil de negocio en redes sociales',['Sin perfil que represente al negocio','Perfil personal, o de negocio sin configurar','Perfil de negocio con nombre, foto y descripción','Cuenta de negocio con contacto, catálogo o enlaces configurados','Nivel 3 en 2 o más redes y revisa estadísticas cada mes']],
-  ['Contacto, ubicación y horario',['Ningún dato de contacto en línea','Datos incompletos o desactualizados','Teléfono/WhatsApp, ubicación y horario correctos en su perfil principal','Misma información correcta en todos los canales y la actualiza','Nivel 3 y la verifica al menos cada 3 meses']],
-  ['Ficha en Google Maps',['No aparece','Ficha sin reclamar, datos incompletos','Ficha reclamada con datos básicos','Ficha completa y actualizada por el dueño','Nivel 3 y revisa estadísticas o reseñas']]]],
- ['Gestión de contenido',[
-  ['Frecuencia de publicación (30 días)',['Ninguna publicación','1 a 3, sin patrón','4 a 7 (alrededor de 1 por semana)','8 o más (2+ por semana), constante','Nivel 3 y ajusta según el desempeño']],
-  ['Coherencia visual y de marca',['Sin contenido publicado','Contenido sin elementos en común','Logo o nombre constante; el estilo varía','Estilo reconocible con plantillas en la mayoría','Nivel 3 en todos los canales con lineamientos; evalúa qué funciona']],
-  ['Planeación de publicaciones',['No planea','Anota ideas, sin fechas','Planea de forma manual (libreta, notas)','Usa herramienta digital para planear o programar','Nivel 3 y revisa cada mes qué funcionó']]]],
- ['Atención a clientes',[
-  ['Canal de contacto directo',['Ninguno en línea','Cuentas personales, sin canal designado','Canal exclusivo del negocio y lo da a conocer','Herramientas de atención (WhatsApp Business, correo propio, formulario)','Nivel 3 con varios canales; prioriza según su uso']],
-  ['Tiempo de respuesta (en horario de atención)',['No responde','Varios días','24 a 48 horas','El mismo día','Menos de 1 hora']],
-  ['Registro de clientes y pedidos',['Ninguno','Solo chats o notas sueltas','Registro manual constante','Registro digital actualizado','Nivel 3 y lo revisa para decidir o dar seguimiento']]]],
- ['Seguridad básica de la información',[
-  ['Contraseñas de las cuentas de negocio',['Sin cuentas digitales del negocio','Repite o comparte contraseñas sin control','Distintas y no compartidas, guardadas de forma informal','Administrador de contraseñas y verificación en dos pasos en la principal','Verificación en dos pasos en todas; cambia contraseñas ante bajas o sospecha']],
-  ['Respaldo de clientes y ventas',['Ninguno','Ocasional, sin frecuencia','Manual con frecuencia establecida','Automático en la nube','Nivel 3 y comprueba la recuperación al menos una vez al año']],
-  ['Control de accesos a las cuentas',['No sabe quién tiene acceso','Lo sabe de forma aproximada','Nombra a todos los que tienen acceso','Lista de accesos y uso de roles o permisos','Nivel 3 y la revisa al menos cada 3 meses']]]]
-];
+const DIMS = [["Presencia en línea", [["Perfil de negocio en redes sociales", "¿Cuentan con un perfil o página en redes sociales sobre su negocio? De ser así ¿qué tan configurado se encuentra?", ["No tiene ningún perfil en ninguna red social", "Promociona desde un perfil personal, o tiene perfil de negocio sin configurar (sin foto, descripción ni contacto)", "Perfil de negocio con nombre, foto y descripción, en al menos una red", "Cuenta de negocio con sus funciones de contacto, catálogo/menú o enlaces configuradas", "Nivel 3 en dos o más redes con datos actualizados, y revisa sus estadísticas al menos una vez al mes"]], ["Contacto, ubicación y horario", "Si un cliente nuevo te busca ¿encuentra tu teléfono o WhatsApp, dónde estás y a qué hora atiendes? ¿Se encuentra está información actualizada en todas tus plataformas?", ["No publica ningún dato de contacto en línea", "Tiene público algún dato, pero incompleto o desactualizado", "Teléfono o WhatsApp, ubicación y horario completos y correctos en su perfil principal", "La misma información correcta en todos sus canales, y la actualiza cuando cambia", "Nivel 3 y verifica de forma programada (al menos cada tres meses) que siga vigente"]], ["Ficha en Google Maps", "¿Tu negocio aparece en Google Maps? De ser así ¿Tú administras esa ficha o la creó alguien más (persona ajena al negocio)?", ["No aparece", "Aparece una ficha que el dueño no ha reclamado ni administra, con datos incompletos", "Reclamó su ficha y tiene datos básicos (nombre, dirección, teléfono, categoría)", "Ficha completa (horario, fotos, categoría correcta) y actualizada por el propio dueño", "Nivel 3 y revisa con regularidad estadísticas o reseñas para ajustar su información u ofertas"]]]], ["Gestión de contenido", [["Frecuencia de publicación (últimos 30 días)", "En el último mes, ¿cuántas publicaciones hiciste en tu perfil principal?", ["Ninguna publicación", "De 1 a 3 publicaciones, sin patrón definido", "De 4 a 7 publicaciones (alrededor de una por semana)", "8 o más publicaciones, con al menos una en cada una de las 4 semanas", "Nivel 3 y ajusta horarios según el alcance de sus publicaciones"]], ["Coherencia visual y de marca", "Cuando alguien ve tus publicaciones, ¿se nota que son de tu negocio (por uso de los mismos colores, logo, tipo de letra)? ¿Cómo haces tus imágenes?", ["Sin contenido publicado", "Contenido variado, sin elementos en común (logo, colores, tipografía)", "Usa el logo o nombre del negocio de forma constante, aunque el estilo de las imágenes varía", "Estilo reconocible (cuenta con colores, tipografía y logo consistentes) en al menos 6 de las últimas 10 publicaciones, con plantillas hechas en una herramienta de diseño", "Nivel 3 en todos sus canales con parámetros definidos (plantillas guardadas, paleta y tipografía), y evalúa qué estilo genera más respuesta"]], ["Planeación de publicaciones", "¿Usas algún calendario o herramienta para decidir qué publicar y cuando hacerlo?", ["No planea, sus publicaciones son sin previsión alguna", "Anota ideas de vez en cuando, pero sin fechas", "Planea de forma manual qué y cuándo publicar (libreta, notas del teléfono, calendario personal, etc.)", "Usa una herramienta digital para planear o programar (calendario compartido, hoja de cálculo, programador de la plataforma) y publica conforme a ella", "Nivel 3 y al cierre de cada mes revisa qué se publicó y su desempeño para ajustar el calendario siguiente"]]]], ["Atención a clientes", [["Canal de contacto directo", "¿Por dónde te escriben tus clientes para preguntar o hacer pedidos? ¿Es un número o cuenta solo del negocio?", ["No ofrece ningún canal de contacto en línea", "Los clientes lo contactan por cuentas personales, sin un canal designado para el negocio", "Canal exclusivo del negocio (como número de WhatsApp o correo) y lo da a conocer en sus perfiles", "Usa herramientas de atención (WhatsApp Business con catálogo o respuestas rápidas, formulario en línea, etc.)", "Nivel 3 con varios canales, y conoce cuáles usan más los clientes para priorizar la atención"]], ["Tiempo de respuesta (en horario de atención)", "Durante el horario de atención, ¿Cuánto tiempo tardas en responder?", ["No responde", "Más de 48 horas", "De 24 a 48 horas", "De 1 hora a menos de 24 horas", "Menos de 1 hora"]], ["Registro de clientes y pedidos", "¿Llevas algún registro de tus clientes o pedidos? De ser así, ¿Dónde y cómo lo administras?", ["No lleva ningún registro", "Solo conserva los chats o notas sueltas como historial", "Registro manual básico y constante (libreta, notas) con cliente y pedido", "Registro digital (hoja de cálculo, aplicación o sistema sencillo) que actualiza de forma constante", "Nivel 3 y lo revisa periódicamente (clientes frecuentes, productos más pedidos) para tomar decisiones o dar seguimiento"]]]], ["Seguridad básica de la información", [["Contraseñas de las cuentas de negocio", "¿Cómo administras las contraseñas de las cuentas del negocio? No las menciones, solo explica cómo", ["No tiene cuentas digitales del negocio", "Repite la misma contraseña en varias cuentas o la ha compartido sin control (por ejemplo, por chat)", "Cada cuenta tiene contraseña distinta y no compartida, guardada de forma informal (libreta, notas del teléfono)", "Contraseñas distintas en un administrador de contraseñas y verificación en dos pasos en al menos la cuenta principal", "Verificación en dos pasos en todas las cuentas, y cambia las contraseñas cuando alguien deja de colaborar o hay sospecha/alerta de acceso indebido"]], ["Respaldo de información de clientes y ventas", "¿Cómo respaldas información de tus clientes y ventas? Por ejemplo, si perdieras hoy tu celular o tu computadora", ["No tiene ningún respaldo", "Respalda de forma ocasional, sin frecuencia definida", "Respalda de forma manual con frecuencia establecida (por ejemplo, una copia semanal en otro dispositivo)", "Respaldo automático en la nube de la información de clientes y ventas", "Nivel 3 y comprueba al menos una vez al año que puede recuperar la información"]], ["Control de accesos a las cuentas", "¿Quién tiene acceso a las cuentas del negocio?", ["No sabe quién tiene acceso a las cuentas del negocio", "Sabe de forma aproximada quién tiene acceso, sin certeza", "Puede nombrar a todas las personas con acceso a cada cuenta", "Lleva una lista de accesos y usa los roles o permisos de cada plataforma (administrador, editor)", "Nivel 3 y revisa la lista de accesos de forma programada (al menos cada tres meses), retirando los que ya no se necesitan"]]]]];
 const SIN_REDES = ['1.1','2.1','2.2','2.3'];
 const $ = id => document.getElementById(id);
 
-// Indicadores
 let html = '';
 DIMS.forEach((d, i) => {
   html += `<section><h2>Dimensión ${i+1}. ${d[0]}</h2>`;
   d[1].forEach((ind, k) => {
     const id = `${i+1}.${k+1}`;
-    html += `<fieldset class="ind" data-id="${id}"><legend>${id} ${ind[0]}</legend>`;
-    ind[1].forEach((t, n) => {
+    html += `<fieldset class="ind" data-id="${id}"><legend>${id} ${ind[0]}</legend><p class="q">${ind[1]}</p>`;
+    ind[2].forEach((t, n) => {
       html += `<label class="opt"><input type="radio" name="n${id}" value="${n}"><span><b>${n}</b> ${t}</span></label>`;
     });
     html += `<div class="ev"><span>Evidencia:</span>
       <label><input type="radio" name="e${id}" value="observado"> Observado</label>
       <label><input type="radio" name="e${id}" value="declarado"> Declarado</label></div></fieldset>`;
   });
-  if (i === 0) html = html.replace(`<section><h2>Dimensión 1.`, `<section><h2>Dimensión 1.`);
   html += '</section>';
 });
 $('dims').innerHTML = html;
-
 
 $('dims').querySelector('section').insertAdjacentHTML('afterbegin',
   '<label class="sin"><input type="checkbox" id="sinredes" style="width:20px;height:20px;accent-color:#0b6e6e"> El negocio no tiene redes sociales (1.1, 2.1, 2.2 y 2.3 = 0)</label>');
@@ -148,13 +130,16 @@ $('sinredes').addEventListener('change', e => {
 
 $('fecha').value = new Date().toISOString().slice(0, 10);
 
-// BOTÓN AQUÍ
+
+
+//BOTÓN ENVIAR
 function mostrar(texto, error) { const m = $('msg'); m.textContent = texto; m.className = error ? 'err' : ''; }
 
 $('f').addEventListener('submit', async ev => {
   ev.preventDefault();
   document.querySelectorAll('.miss').forEach(x => x.classList.remove('miss'));
 
+  if (!$('acepto').checked) { mostrar('Para continuar, el dueño debe aceptar el aviso de privacidad.', true); $('acepto').focus(); return; }
   const nombre = $('nombre').value.trim(), emp = Number($('emp').value);
   if (!nombre) { mostrar('Escribe el nombre del negocio.', true); $('nombre').focus(); return; }
   if (!(emp >= 1 && emp <= 10)) { mostrar('El número de empleados debe estar entre 1 y 10.', true); $('emp').focus(); return; }
@@ -187,7 +172,7 @@ $('f').addEventListener('submit', async ev => {
     const j = await r.json();
     if (!j.ok) throw new Error(j.error);
     const filas = j.dimensiones.map((v, i) => `<tr><td>${DIMS[i][0]}</td><td>${v.toFixed(2)}</td></tr>`).join('');
-    $('tabla').innerHTML = filas + `<tr class="tot"><td>Nivel general (${j.id_aplicacion})</td><td>${j.general.toFixed(2)} · ${NIVELES[Math.round(j.general)]}</td></tr>`;
+    $('tabla').innerHTML = `<tr><td>ID del negocio</td><td>${j.id_microempresa}</td></tr>` + filas + `<tr class="tot"><td>Nivel general (${j.id_aplicacion})</td><td>${j.general.toFixed(2)} · ${NIVELES[Math.round(j.general)]}</td></tr>`;
     $('f').hidden = true; $('res').hidden = false; window.scrollTo(0, 0);
   } catch (err) {
     mostrar('No se pudo guardar: ' + err.message + ' Tus respuestas siguen en pantalla; revisa la conexión y vuelve a intentar.', true);
